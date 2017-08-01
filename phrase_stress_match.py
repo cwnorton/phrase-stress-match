@@ -2,7 +2,7 @@
 
 """
 phrase_stress_match.py
-By Chris Norton, 2016
+By Chris Norton, 2017
 
 Matches user-input phrase to phrases from an external newline-separated file of
 phrases, based on stress patterns from nltk.corpus.cmudict.
@@ -14,13 +14,13 @@ songs — but it works slightly better for phrases rather than names.  Slightly.
 import re
 from nltk.corpus import cmudict
 
+INPUT_PATH = 'uk_number_ones.txt'
 STRESS_DICT = cmudict.dict()
 
 def clean_string(string):
     # Return `string` lowercased & with non-alphanumeric characters removed.
 
-    string = string.lower()
-    string = re.sub(r'[^\w .]', '', string)
+    string = re.sub(r'[^\w .]', '', string.lower())
 
     return(string)
 
@@ -28,7 +28,7 @@ def get_stress_pattern(word):
     # Return a string representing the stress pattern of `word`.
 
     try:
-        stress_pattern = [list(y[2] for y in word if y[-1].isdigit()) 
+        stress_pattern = [list(y[2] for y in word if y[-1].isdigit())
                 for word in STRESS_DICT[word.lower()]]
     except:
         return None
@@ -69,11 +69,12 @@ def tag_list(input_list):
 def main():
 
     # Read in external list of phrases and create a stress pattern dictionary
-    # from them
-    phrases = [phrase.strip() for phrase in open('songs.txt', 'r').readlines()]
+    # from them.
+    phrases = [phrase.strip() for phrase in open(INPUT_PATH, 'r').readlines()]
     phrases = tag_list(phrases)
 
     while True:
+
         # Get user input.
         try:
             input_phrase = input('\nEnter a phrase (x to exit):')
