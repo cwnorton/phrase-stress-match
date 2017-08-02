@@ -9,19 +9,43 @@ phrases, based on stress patterns from nltk.corpus.cmudict.
 
 Very rough-and-ready, designed originally to 'meter-match' people's names to pop
 songs — but it works slightly better for phrases rather than names.  Slightly.
+
+Usage: phrase_stress_match.py [-h] [-l PHRASE_LIST] [phrase]
+
+no arguments: interactive mode
+
+positional arguments:
+  phrase                phrase to match to phrase from list, in quotes
+
+optional arguments:
+  -h, --help            show help message and exit
+  -l PHRASE_LIST, --phrase-list PHRASE_LIST
+                        path to newline-separated list of phrases
+
 """
 
+import argparse
+import pathlib
 import re
 from nltk.corpus import cmudict
 
-INPUT_PATH = 'uk_number_ones.txt'
+DEFAULT_INPUT_PATH = 'uk_number_ones.txt'
 STRESS_DICT = cmudict.dict()
+
+def handle_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('phrase', nargs = '?', 
+            help = 'phrase to match to phrase from list, in quotes')
+    parser.add_argument("-l", "--phrase-list", type = str, 
+            help = 'path to newline-separated list of phrases', 
+            default = DEFAULT_INPUT_PATH)
+    parsed_args = parser.parse_args()
+    return(parsed_args)
 
 def clean_string(string):
     # Return `string` lowercased & with non-alphanumeric characters removed.
 
     string = re.sub(r'[^\w .]', '', string.lower())
-
     return(string)
 
 def get_stress_pattern(word):
@@ -66,29 +90,52 @@ def tag_list(input_list):
 
     return(tagged_list)
 
+def get_matches(input_phrase, phrases):
+    # Display list of phrases that match the input.
+
+    stress = get_phrase_stress_pattern(input_phrase)
+    if stress in phrases.keys():
+        return('\n'.join(phrases[stress]))
+    else:
+        return('No matches found :(')
+
 def main():
+
+    args = handle_arguments()
+    if args.phrase is None:
+        interactive_mode = True
+    else:
+        interactive_mode = False
+
+    if args.phrase_list != DEFAULT_INPUT_PATH:
+        path = pathlib.Path(args.phrase_list)
+        if not path.exists():
+            print('Error: Phrase list file {0} not found.'.format(
+                args.phrase_list))
+            return
 
     # Read in external list of phrases and create a stress pattern dictionary
     # from them.
-    phrases = [phrase.strip() for phrase in open(INPUT_PATH, 'r').readlines()]
+    phrases = [phrase.strip() for phrase 
+            in open(args.phrase_list, 'r').readlines()]
     phrases = tag_list(phrases)
 
-    while True:
+    if interactive_mode:
 
-        # Get user input.
-        try:
-            input_phrase = input('\nEnter a phrase (x to exit):')
-        except KeyboardInterrupt:
-            return
-        if input_phrase == 'x': return
+        while True:
 
-        # If user input phrase has same stress pattern as anything in the
-        # external list of phrases, display all matches.
-        stress = get_phrase_stress_pattern(input_phrase)
-        if stress in phrases.keys():
-            print('\n'.join(phrases[stress]))
-        else:
-            print('No matches found :(')
+            # Get user input.
+            try:
+                input_phrase = input('\nEnter a phrase (x to exit):')
+            except KeyboardInterrupt:
+                return
+            if input_phrase == 'x': return
+
+            # If user input phrase has same stress pattern as anything in the
+            # external list of phrases, display all matches.
+            print(get_matches(input_phrase, phrases))
+    else:
+        print(get_matches(args.phrase, phrases))
 
 if __name__ == '__main__':
     main()
