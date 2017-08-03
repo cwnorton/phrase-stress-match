@@ -10,6 +10,9 @@ phrases, based on stress patterns from nltk.corpus.cmudict.
 Very rough-and-ready, designed originally to 'meter-match' people's names to pop
 songs - but it works slightly better for phrases rather than names.  Slightly.
 
+If external file is tab-delimited, only the first column will be used to match,
+but all columns will be displayed when there is a match.
+
 Usage: phrase_stress_match.py [-h] [-l PHRASE_LIST] [phrase]
 
 no arguments: interactive mode
@@ -34,10 +37,10 @@ STRESS_DICT = cmudict.dict()
 
 def handle_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('phrase', nargs = '?', 
+    parser.add_argument('phrase', nargs = '?',
             help = 'phrase to match to phrase from list, in quotes')
-    parser.add_argument("-l", "--phrase-list", type = str, 
-            help = 'path to newline-separated list of phrases', 
+    parser.add_argument("-l", "--phrase-list", type = str,
+            help = 'path to newline-separated list of phrases',
             default = DEFAULT_INPUT_PATH)
     parsed_args = parser.parse_args()
     return(parsed_args)
@@ -119,7 +122,7 @@ def main():
 
     # Read in external list of phrases and create a stress pattern dictionary
     # from them.
-    phrases = [phrase.strip() for phrase 
+    phrases = [phrase.strip() for phrase
             in open(args.phrase_list, 'r').readlines()]
     phrases = tag_list(phrases)
 
@@ -129,7 +132,7 @@ def main():
 
             # Get user input.
             try:
-                input_phrase = input('\nEnter a phrase (x to exit):')
+                input_phrase = input('\nEnter a phrase (x to exit): ')
             except KeyboardInterrupt:
                 return
             if input_phrase == 'x': return
