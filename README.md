@@ -1,8 +1,10 @@
 # Phrase Stress Match
 
-Matches a user-input English phrase with phrases from an external list, based on stress patterns.  Stress is taken from the cmudict corpus in nltk (http://www.nltk.org/_modules/nltk/corpus/reader/cmudict.html).
+Matches user-input phrase to phrases from an external newline-separated file of phrases, based on stress patterns from nltk.corpus.cmudict.
 
-A silly thing put together in procrastination time.  Originally designed to match people’s names with pop songs, but it works a little better with phrases.
+Very rough-and-ready, designed originally to 'meter-match' people's names to pop songs - but it works slightly better for phrases rather than names.  Slightly.
+
+If external file is tab-delimited, only the first column will be used to match, but all columns will be displayed when there is a match.
 
     Usage: phrase_stress_match.py [-h] [-l PHRASE_LIST] [phrase]
     
