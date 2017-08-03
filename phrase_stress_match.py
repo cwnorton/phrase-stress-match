@@ -122,7 +122,6 @@ def main():
     phrases = [phrase.strip() for phrase 
             in open(args.phrase_list, 'r').readlines()]
     phrases = tag_list(phrases)
-    print(phrases)
 
     if interactive_mode:
 
