@@ -8,7 +8,7 @@ Matches user-input phrase to phrases from an external newline-separated file of
 phrases, based on stress patterns from nltk.corpus.cmudict.
 
 Very rough-and-ready, designed originally to 'meter-match' people's names to pop
-songs — but it works slightly better for phrases rather than names.  Slightly.
+songs - but it works slightly better for phrases rather than names.  Slightly.
 
 Usage: phrase_stress_match.py [-h] [-l PHRASE_LIST] [phrase]
 
@@ -72,7 +72,7 @@ def get_phrase_stress_pattern(phrase):
         else:
             return None
 
-    return(str(' '.join(phrase_stress_pattern)))
+    return(str(''.join(phrase_stress_pattern)))
 
 def tag_list(input_list):
     # Return a dictionary of stress patterns, with each stress pattern
@@ -81,6 +81,9 @@ def tag_list(input_list):
     tagged_list = {}
     for phrase in input_list:
         original_phrase = phrase
+        # If this a tabbed file, only take phrase from first column.
+        if phrase.find('\t') > -1:
+            phrase = phrase[0:phrase.find('\t')]
         stress_pattern = get_phrase_stress_pattern(phrase)
         if stress_pattern is not None :
             if stress_pattern in tagged_list.keys():
@@ -119,6 +122,7 @@ def main():
     phrases = [phrase.strip() for phrase 
             in open(args.phrase_list, 'r').readlines()]
     phrases = tag_list(phrases)
+    print(phrases)
 
     if interactive_mode:
 
