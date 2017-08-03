@@ -62,7 +62,7 @@ def get_stress_pattern(word):
     else:
         return str(('').join(stress_pattern[0]))
 
-def get_phrase_stress_pattern(phrase):
+def get_phrase_stress_pattern(phrase, show_not_found = False):
     # Return a space-separated string for the stress patterns of each word in
     # `phrase`.
 
@@ -73,6 +73,9 @@ def get_phrase_stress_pattern(phrase):
         if word_stress_pattern is not None:
             phrase_stress_pattern.append(word_stress_pattern)
         else:
+            if show_not_found:
+                print("No stress pattern for '{0}' available. ".format(word) +
+                    "Try a similar word.")
             return None
 
     return str(''.join(phrase_stress_pattern))
@@ -99,11 +102,17 @@ def tag_list(input_list):
 def get_matches(input_phrase, phrases):
     # Display list of phrases that match the input.
 
-    stress = get_phrase_stress_pattern(input_phrase)
+    stress = get_phrase_stress_pattern(input_phrase, True)
     if stress in phrases.keys():
-        return('\n'.join(phrases[stress]))
+        return '\n'.join(phrases[stress])
     else:
-        return('No matches found :(')
+        return None
+
+def show_matches(matches):
+    if matches is None:
+        print('No matches found :(')
+    else:
+        print(matches)
 
 def main():
 
@@ -127,9 +136,7 @@ def main():
     phrases = tag_list(phrases)
 
     if interactive_mode:
-
         while True:
-
             # Get user input.
             try:
                 input_phrase = input('\nEnter a phrase (x to exit): ')
@@ -139,9 +146,10 @@ def main():
 
             # If user input phrase has same stress pattern as anything in the
             # external list of phrases, display all matches.
-            print(get_matches(input_phrase, phrases))
+            show_matches(get_matches(input_phrase, phrases))
+
     else:
-        print(get_matches(args.phrase, phrases))
+        show_matches(get_matches(args.phrase, phrases))
 
 if __name__ == '__main__':
     main()
