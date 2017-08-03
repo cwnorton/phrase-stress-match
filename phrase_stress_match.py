@@ -43,13 +43,13 @@ def handle_arguments():
             help = 'path to newline-separated list of phrases',
             default = DEFAULT_INPUT_PATH)
     parsed_args = parser.parse_args()
-    return(parsed_args)
+    return parsed_args
 
 def clean_string(string):
     # Return `string` lowercased & with non-alphanumeric characters removed.
 
     string = re.sub(r'[^\w .]', '', string.lower())
-    return(string)
+    return string
 
 def get_stress_pattern(word):
     # Return a string representing the stress pattern of `word`.
@@ -60,7 +60,7 @@ def get_stress_pattern(word):
     except:
         return None
     else:
-        return(str(('').join(stress_pattern[0])))
+        return str(('').join(stress_pattern[0]))
 
 def get_phrase_stress_pattern(phrase):
     # Return a space-separated string for the stress patterns of each word in
@@ -75,7 +75,7 @@ def get_phrase_stress_pattern(phrase):
         else:
             return None
 
-    return(str(''.join(phrase_stress_pattern)))
+    return str(''.join(phrase_stress_pattern))
 
 def tag_list(input_list):
     # Return a dictionary of stress patterns, with each stress pattern
@@ -94,7 +94,7 @@ def tag_list(input_list):
             else:
                 tagged_list[stress_pattern] = [original_phrase]
 
-    return(tagged_list)
+    return tagged_list
 
 def get_matches(input_phrase, phrases):
     # Display list of phrases that match the input.
